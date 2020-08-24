@@ -107,6 +107,8 @@ broker.group_settings(**group_params) # group by these settings
 cancelled_trades = broker.load(**broker_params) # 
 ```
 
+### Checking Trades
+
 When we get the trades from the load function it would have an id we can use to identify everything inside of the Executor. For example, after calling all of the trade information:
 
 ```python
@@ -116,8 +118,6 @@ for trade in open_trades:
     # If they don't have an executor_id, it won't check.
     broker.check_trade(trade)
 ```
-
-### Check Trade
 
 ```python
 def check_trade(self, trade: Trade):
@@ -142,5 +142,4 @@ def get_status(self, executor_id:str):
     status_dict: dict = self.api.pull_status(api_keys, executor_id)
     status = Status().cast(**status_dict)
     return status
-    
 ```
