@@ -2,4 +2,6 @@ import abc
 
 
 class DataSchema(abc.ABC):
-    pass
+
+    def set_identifiers(self, **kwargs):
+        raise NotImplementedError

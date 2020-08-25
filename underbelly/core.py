@@ -1,4 +1,5 @@
-import abc
+import abc, copy
+from loguru import logger
 from underbelly import DataProcessor, DataSchema
 
 
@@ -12,11 +13,22 @@ class EnvModuleType(abc.ABCMeta):
 
 
 class EnvModule(metaclass=EnvModuleType):
+    """Env Module
+
+    The environment module is a place where all parts of the system will interact with each other.
+    
+    The point of rebuilding this time arouond is to accellerate parts of the process and make the system more modular.
+
+    It operates a lot like pytorch. It automatically adds schema and database reference information to connect to other modules inside of the system.
+    
+    As more modules are attached they recieve reference to the database system and
+    """
 
     def __init__(self, *args, **kwargs):
         self.depenencies = {}
         self._base_essentials = {
-            "schema": DataSchema, "processor": DataProcessor
+            "schema": DataSchema,
+            "database": DataProcessor,
         }
 
     def step(self, *args, **kwargs):
@@ -42,6 +54,10 @@ class EnvModule(metaclass=EnvModuleType):
                     f"{k} is not the right instance type. It should be {v}"
                 )
 
+    def __transplant_schema(self):
+        logger.info("Push schema")
+        pass
+
     def __merge_essential_fields(self):
         self._base_essentials.update(self.dependencies)
         self.dependencies = copy.copy(self._base_essentials)
@@ -49,3 +65,4 @@ class EnvModule(metaclass=EnvModuleType):
     def _verify_fields(self):
         self.__merge_essential_fields()
         self.__verify_all_inate_types()
+        self.__transplant_schema()

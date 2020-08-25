@@ -1,5 +1,7 @@
 import uuid
 from typing import Optional
+
+from loguru import logger
 from underbelly.orders import TradeType
 from underbelly.orders.utils import split
 
@@ -61,6 +63,8 @@ class Trade(object):
         self._commission: Optional[str] = None
         self._userid: Optional[str] = None
         self._islive: bool = False
+        self._order_id: Optional[str] = None
+        self._slippage: float = 0.0
         self.split_trade()
 
     def copy(self) -> 'Trade':
@@ -186,11 +190,39 @@ class Trade(object):
     def live(self, _live: bool):
         self._live = _live
 
+    @property
+    def orderid(self):
+        return self._order_id
+
+    @orderid.setter
+    def orderid(self, _order_id: str):
+        self._order_id = _order_id
+
+    def is_pair(self):
+        return self.base is not None and self.quote is not None
+
     def split_trade(self):
-        pair = split(self._symbol)
+        pair = split(['_', '/', ':', ','], self._symbol)
         if len(pair) == 2:
             self.base = pair[0]
             self.quote = pair[1]
+
+    def is_backtest(self):
+        is_fake_exchange = self.exchange in ['backtest', 'faake_exchange']
+        is_live = (self.live == False)
+        is_episode = (self.episode is not "live")
+        return is_fake_exchange and (is_live or (is_episode))
+
+    def is_order(self) -> bool:
+        return self.orderid is not None
+
+    @property
+    def slippage(self) -> float:
+        return self._slippage
+
+    @slippage.setter
+    def slippage(self, _slippage) -> float:
+        self._slippage = _slippage
 
     def __str__(self) -> str:
         action_name = "BUY"
