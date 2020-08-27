@@ -1,7 +1,7 @@
 import abc
 
 
-class DataProcessor(abc.ABC):
+class IDatabase(abc.ABC):
     """Database Abstract
 
     Will use to hold general functions and functionality for the updateself.

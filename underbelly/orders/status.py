@@ -1,4 +1,5 @@
 import abc, enum, typing
+import uuid
 from underbelly.orders import Trade
 """Status
 
@@ -28,8 +29,12 @@ class ExecutorStatus(Status):
     def __init__(self, res_code: int = 200, data={}) -> None:
         super().__init__(res_code, data)
 
+    @property
+    def orderid(self) -> str:
+        return self._order_id
+
     def fit_data(self, data={}):
-        raise NotImplementedError
+        self._order_id = uuid.uuid4().hex
 
 
 class BrokerStatus(Status):
@@ -47,3 +52,6 @@ class BrokerStatus(Status):
 
     def trades(self):
         return self._trades
+
+
+__all__ = ['ExecutorStatus']

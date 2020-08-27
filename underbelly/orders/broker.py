@@ -1,8 +1,8 @@
 from uuid import uuid4
 from loguru import logger
 from underbelly import EnvModule
-from underbelly.background import PlaceholderSchema, PlaceholderDB
-from underbelly.orders import Trade, executor
+from underbelly.background import MetricSchema, PlaceholderDB
+from underbelly.orders import Trade, executor, status
 
 
 class Broker(EnvModule):
@@ -10,9 +10,9 @@ class Broker(EnvModule):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.dependencies = {}
-        self.schema = PlaceholderSchema()
+        self.schema = MetricSchema()
         self.database = PlaceholderDB()
-        self.executor = executor.Executor()
+        self.executor = executor.SimulatedExecutor()
 
     def set_identifiers(
         self,
@@ -25,18 +25,19 @@ class Broker(EnvModule):
             userid=userid, episode=episode, exchange=exchange, live=live
         )
 
-
-    def submit(self, trade: Trade) -> Trade:
-        if trade.is_order:
+    def submit(self, trade: Trade) -> status.ExecutorStatus:
+        if trade.is_order():
             raise ValueError(
                 "You can't submit a trade that's already been submitted."
             )
-        trade.orderid = uuid4().hex
-        self.executor.submit()
-        return trade
+        executor_status: status.ExecutorStatus = self.executor.submit(trade)
+        return executor_status
 
-    def check(self):
-        pass
+    def check(self, trade: Trade):
+        if not trade.is_order():
+            raise ValueError(
+                "You can't submit a trade that's already been submitted."
+            )
 
     def cancel(self):
         pass

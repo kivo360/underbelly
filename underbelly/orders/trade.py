@@ -221,7 +221,7 @@ class Trade(object):
         return self._slippage
 
     @slippage.setter
-    def slippage(self, _slippage) -> float:
+    def slippage(self, _slippage):
         self._slippage = _slippage
 
     def __str__(self) -> str:

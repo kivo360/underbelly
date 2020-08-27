@@ -9,19 +9,19 @@ This will be absolutely critical in making sure this system doesn't blow up, and
 """
 import random
 import uuid
-from unittest.mock import patch
-
+from loguru import logger
 import pytest
+from pytest_mock.plugin import MockerFixture
 
 from underbelly.orders import Broker, Trade, TradeCaster
-
+from underbelly.orders.executor import Executor
 USERID = uuid.uuid4().hex
 EPISODE = uuid.uuid4().hex
 EXCHANGE = "backtest"
 LIVE = False
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def simulated_broker():
     broker = Broker()
     broker.set_identifiers(
@@ -30,9 +30,8 @@ def simulated_broker():
     return broker
 
 
-def test_broker_submit(mocker, simulated_broker: Broker):
-    patch.object()
-    MINIMUM_BUY = {
+def test_broker_submit(mocker: MockerFixture, simulated_broker: Broker):
+    COMPLETED_BUY = {
         "symbol": "ETH_USD",
         "trade_type": "limitBuy",
         "amount": random.uniform(0, 3),
@@ -42,18 +41,58 @@ def test_broker_submit(mocker, simulated_broker: Broker):
         "exchange": "binance",
         "live": True
     }
-    trade_caster = TradeCaster()
-    trade: Trade = trade_caster.cast(**MINIMUM_BUY)
-    # assert trade_caster is not None, "Tradecaster failled for some reason."
-    # with pytest.raises(ValueError):
 
-    simulated_broker.submit(trade)
-    assert True, "Was able to get all orders"
+    INCOMPLETED_BUY = {
+        "symbol": "ETH_USD",
+        "trade_type": "limitBuy",
+        "amount": random.uniform(0, 3),
+        "price": random.uniform(1, 20000),
+        "episode": "live",
+        "exchange": "binance",
+        "live": True
+    }
+
+    patched_function = mocker.patch(
+        'underbelly.orders.executor.Executor.submit'
+    )
+
+    with pytest.raises(ValueError):
+        trade_caster = TradeCaster()
+        trade: Trade = trade_caster.cast(**COMPLETED_BUY)
+        simulated_broker.submit(trade)
+
+    incomplete: Trade = trade_caster.cast(**INCOMPLETED_BUY)
+    simulated_broker.submit(incomplete)
+    patched_function.assert_called()
 
 
 def test_broker_status(mocker, simulated_broker: Broker):
+    COMPLETED_BUY = {
+        "symbol": "ETH_USD",
+        "trade_type": "limitBuy",
+        "amount": random.uniform(0, 3),
+        "price": random.uniform(1, 20000),
+        "order_id": uuid.uuid4().hex,
+        "episode": "live",
+        "exchange": "binance",
+        "live": True
+    }
 
-    assert True, "Was able to get all orders"
+    INCOMPLETED_BUY = {
+        "symbol": "ETH_USD",
+        "trade_type": "limitBuy",
+        "amount": random.uniform(0, 3),
+        "price": random.uniform(1, 20000),
+        "episode": "live",
+        "exchange": "binance",
+        "live": True
+    }
+
+    trade_caster = TradeCaster()
+
+    incomplete: Trade = trade_caster.cast(**INCOMPLETED_BUY)
+    status = simulated_broker.submit(incomplete)
+    assert isinstance(status.orderid, str)
 
 
 def test_broker_cancel(mocker, simulated_broker: Broker):
