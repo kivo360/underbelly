@@ -51,6 +51,11 @@ class IDependenciesAbstract(abc.ABC, metaclass=VerificationType):
         self.__merged_depend = collections.OrderedDict(
             sorted(self.__merged_depend.items())
         )
+        is_valid, missing, _ = is_match_dict(self.dependencies, self.__merged_depend)
+        if not is_valid:
+            raise AttributeError(
+                f"One of the requirements aren't set: {missing}"
+            )
         _add_definition = add_definition(self)
         map(_add_definition, self.__merged_depend)
 

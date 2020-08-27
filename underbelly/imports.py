@@ -20,6 +20,8 @@ from toolz import curried
 from toolz.curried import (
     filter, itemmap, iterate, keyfilter, keymap, map, merge, pipe, reduce
 )
+from pydantic import BaseModel as base_model, create_model
+
 from toolz.functoolz import curry
 
 abstractmethod = abc.abstractmethod
@@ -43,6 +45,7 @@ class VerificationType(abc.ABCMeta):
 __all__ = [
     "random",
     "abc",
+    'base_model',
     'copy',
     'merge',
     "typing",

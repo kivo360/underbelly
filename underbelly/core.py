@@ -1,6 +1,6 @@
 from underbelly.imports import *
 from underbelly.valid import IDependenciesAbstract
-from underbelly import IDatabase, ISchema
+from underbelly import IDatabase, ISchema, Interoperator, IConnection
 
 
 class EnvModule(IDependenciesAbstract, abc.ABC):
@@ -15,11 +15,14 @@ class EnvModule(IDependenciesAbstract, abc.ABC):
     As more modules are attached they recieve reference inside of the subsystem for possible preplanning.
     """
     _dependencies = {
-        "db": IDatabase, "schema": ISchema
+        "db": IDatabase,
+        "schema": ISchema,
+        'intop': Interoperator,
+        'conn': IConnection
     }
 
     def __init__(self, *args, **kwargs):
-        super(EnvModule, self).__(*args, **kwargs)
+        super(EnvModule, self).__init__(*args, **kwargs)
 
     def step(self, *args, **kwargs):
         raise NotImplementedError
@@ -31,10 +34,17 @@ class EnvModule(IDependenciesAbstract, abc.ABC):
         raise NotImplementedError
 
     def __dependency_injection(self):
-        logger.error(
-            "Inject the database Operations and Schema into the Operations object."
-        )
+        self.intop.attach(self.db, self.schema, self.conn)
+
+    @property
+    def database(self) -> IDatabase:
+        return self.db
+
+    @property
+    def ioper(self) -> Interoperator:
+        return self.intop
 
     def _verify_fields(self):
         super()._verify_fields()
+
         self.__dependency_injection()

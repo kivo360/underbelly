@@ -1,5 +1,6 @@
+from loguru import logger
 from underbelly import EnvModule
-from underbelly.envs import schemas
+from underbelly.envs import schemas, dbs, intop
 
 
 class Metrics(EnvModule):
@@ -8,8 +9,14 @@ class Metrics(EnvModule):
         super().__init__(*args, **kwargs)
         self.dependencies = {}
         self.schema = schemas.MetricSchema()
-        self.database = ub.PlaceholderDB()
+        self.db = dbs.PlaceholderDB()
+        self.intop = intop.Interoperator()
+        self.conn = dbs.IConnection()
+
+    def send(self, _metrics: dict):
+        self.intop.dispatch(_metrics)
 
 
 if __name__ == "__main__":
-    Metrics()
+    meter = Metrics()
+    meter.send({"shit": "stick"})
