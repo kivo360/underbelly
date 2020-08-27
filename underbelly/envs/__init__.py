@@ -1,6 +1,7 @@
+from .modules import *
 from underbelly.envs import schemas, dbs
-from underbelly.envs.schemas import ISchema
-from underbelly.envs.dbs import IDatabase
+from underbelly.envs.modules.schemas import ISchema
+from underbelly.envs.modules.dbs import IDatabase
 
 __all__ = ['dbs', 'schemas', 'ISchema', 'IDatabase']
-# from underbelly.envs.dbs.core import PlaceholderDB
+# from underbelly.envs.modules.dbs.core import PlaceholderDB

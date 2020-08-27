@@ -1,5 +1,5 @@
 from underbelly.envs.utils import *
-from underbelly.envs.schemas import Identifier, EpisodeIdentifier
+from underbelly.envs.modules.schemas import Identifier, EpisodeIdentifier
 from underbelly.imports import *
 
 
