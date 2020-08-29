@@ -1,9 +1,10 @@
+from underbelly.imports import *
+from underbelly.envs.utils import *
 from toolz.curried import valfilter
 
-from underbelly.envs.modules.schemas import EpisodeIdentifier, Identifier
-from underbelly.envs.modules.schemas.fields import Field
-from underbelly.envs.utils import *
-from underbelly.imports import *
+from underbelly.envs.modules.schemas import Identifier
+from underbelly.envs.modules.schemas import Field
+from underbelly.envs.modules.episodes import EpisodeIdentifier
 from underbelly.valid import IDependenciesAbstract
 
 

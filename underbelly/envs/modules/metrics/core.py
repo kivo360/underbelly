@@ -1,6 +1,9 @@
+from underbelly.envs.modules.episodes import EpisodeIdentifier
 from underbelly.envs.modules.schemas import *
 from underbelly.envs.utils import *
 from underbelly.imports import *
+
+start_all(globals())
 
 
 class MetricSchema(ISchema):
@@ -39,6 +42,8 @@ class MetricSchema(ISchema):
         self.__initialize_internal_system()
         # logger.debug("Checking that we have all of the schema objects.")
 
+
+end_all(globals())
 
 if __name__ == "__main__":
     MetricSchema()

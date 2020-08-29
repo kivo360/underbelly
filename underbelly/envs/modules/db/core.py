@@ -1,6 +1,8 @@
 from underbelly.envs.utils import *
 from underbelly.imports import *
-from underbelly.envs.modules.dbs import IPayload, IConnection, LocalPayload
+from underbelly.envs.models import IPayload, IConnection, LocalPayload
+
+start_all(globals())
 
 
 class IDatabase(abc.ABC):
@@ -12,8 +14,8 @@ class IDatabase(abc.ABC):
     It will also have better features as time progresses. All to speed up the system.
     """
 
-    def __init__(self, conn: IConnection) -> None:
-        self.conn = conn
+    def __init__(self, conn_params: IConnection) -> None:
+        self.conn_params = conn_params
 
     def initialize(self, info: IPayload):
         # Send connction information to lower layer
@@ -64,5 +66,7 @@ class IDatabase(abc.ABC):
     def lock(self, info: IPayload):
         raise NotImplementedError
 
+
+end_all(globals())
 
 __all__ = ['IDatabase']

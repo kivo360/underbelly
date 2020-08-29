@@ -1,6 +1,6 @@
 from underbelly.imports import *
 from underbelly.valid import IDependenciesAbstract
-from underbelly import IDatabase, ISchema, Interoperator, IConnection
+from underbelly import IDatabase, ISchema, Operators, IConnection
 
 
 class EnvModule(IDependenciesAbstract, abc.ABC):
@@ -17,7 +17,7 @@ class EnvModule(IDependenciesAbstract, abc.ABC):
     _dependencies = {
         "db": IDatabase,
         "schema": ISchema,
-        'intop': Interoperator,
+        'opts': Operators,
         'conn': IConnection
     }
 
@@ -34,15 +34,15 @@ class EnvModule(IDependenciesAbstract, abc.ABC):
         raise NotImplementedError
 
     def __dependency_injection(self):
-        self.intop.attach(self.db, self.schema, self.conn)
+        self.opts.attach(self.db, self.schema, self.conn)
 
     @property
     def database(self) -> IDatabase:
         return self.db
 
     @property
-    def ioper(self) -> Interoperator:
-        return self.intop
+    def ioper(self) -> Operators:
+        return self.opts
 
     def _verify_fields(self):
         super()._verify_fields()

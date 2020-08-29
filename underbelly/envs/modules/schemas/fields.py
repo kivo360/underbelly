@@ -7,7 +7,7 @@ from underbelly.envs.utils import (
 
 
 class Field:
-    supported_types = [str, int, float, bool, dict, list]
+    supported_types = [str, int, float, bool, dict, list, np.dtype]
 
     def __init__(self, name: str, _type: type, rules: AnyDict = {}) -> None:
         if _type not in self.supported_types:

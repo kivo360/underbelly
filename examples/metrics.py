@@ -1,10 +1,10 @@
-from loguru import logger
+from underbelly.imports import *
 from underbelly import EnvModule
-from underbelly.envs import schemas, dbs, intop
-
-from underbelly.envs.modules.intop import Interoperator
-from underbelly.envs.modules.dbs import PlaceholderDB
-from underbelly.envs.modules.schemas import MetricSchema
+from underbelly.envs import db
+from underbelly.envs.models import *
+from underbelly.envs.modules.opts import Operators, MetricOperator
+from underbelly.envs.modules.db import PlaceholderDB
+from underbelly.envs.modules import MetricSchema
 
 
 class Metrics(EnvModule):
@@ -20,15 +20,22 @@ class Metrics(EnvModule):
         super().__init__(*args, **kwargs)
         self.dependencies = {}
         self.schema = MetricSchema()
-        self.db = PlaceholderDB()
+        self.conn = IConnection()
+        self.db = PlaceholderDB(self.conn)
         # This is where all of your specific commands go.
-        self.intop = Interoperator()
-        self.conn = dbs.IConnection()
+        self.opts = MetricOperator()
 
-    def send(self, _metrics: dict):
-        self.intop.dispatch(_metrics)
+    def report(self, _metrics: IPayload):
+        self.opts.dispatch(_metrics)
 
 
 if __name__ == "__main__":
-    meter = Metrics()
-    meter.send({"shit": "stick"})
+    current_monitor = Metrics()
+    while True:
+        payload = MetricsPayload(
+            entity="rewards",
+            command_type=CommandTypes.RECORD,
+            labels=dict(hello="world"),
+            values=dict(price=random.uniform(0, 1000))
+        )
+        current_monitor.report(payload)

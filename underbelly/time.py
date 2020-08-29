@@ -1,9 +1,9 @@
 from loguru import logger
 from underbelly import EnvModule
-from underbelly.envs import schemas, dbs, intop
+from underbelly.envs import schemas, db, opts
 
-from underbelly.envs.modules.intop import Interoperator
-from underbelly.envs.modules.dbs import PlaceholderDB
+from underbelly.envs.modules.opts import Operators
+from underbelly.envs.modules.db import PlaceholderDB
 from underbelly.envs.modules.schemas import MetricSchema
 
 
@@ -22,8 +22,8 @@ class TimeseriesEnv(EnvModule):
         self.schema = MetricSchema()
         self.db = PlaceholderDB()
         # This is where all of your specific commands go.
-        self.intop = Interoperator()
-        self.conn = dbs.IConnection()
+        self.opts = Operators()
+        self.conn = db.IConnection()
 
     def send(self, _metrics: dict):
-        self.intop.dispatch(_metrics)
+        self.opts.dispatch(_metrics)
