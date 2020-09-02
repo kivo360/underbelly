@@ -44,7 +44,7 @@ class EnvModule(IDependenciesAbstract, abc.ABC):
     def ioper(self) -> Operators:
         return self.opts
 
-    def _verify_fields(self):
-        super()._verify_fields()
+    def _post_init_hooks(self):
+        super()._post_init_hooks()
 
         self.__dependency_injection()

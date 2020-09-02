@@ -84,7 +84,7 @@ class Identifier(metaclass=VerificationType):
         del self.__initfields
         del self.__isinitfields
 
-    def _verify_fields(self):
+    def _post_init_hooks(self):
         self.__extract_init()
         self.__merge_fields()
         self.__create_field_key()

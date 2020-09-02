@@ -37,8 +37,8 @@ class MetricSchema(ISchema):
             "Sending information about the schema to the lower-level system."
         )
 
-    def _verify_fields(self):
-        super()._verify_fields()
+    def _post_init_hooks(self):
+        super()._post_init_hooks()
         self.__initialize_internal_system()
         # logger.debug("Checking that we have all of the schema objects.")
 

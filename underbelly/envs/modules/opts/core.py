@@ -38,7 +38,7 @@ class Operators(abc.ABC, metaclass=VerificationType):
         self.optenv.db = db
         self.optenv.model = schema
         self.optenv.conn = conn
-        self._verify_fields()
+        self._post_init_hooks()
 
     def connect(self):
         if self.optenv.is_none():
@@ -49,7 +49,7 @@ class Operators(abc.ABC, metaclass=VerificationType):
     def reset(self):
         self.connect()
 
-    def _verify_fields(self):
+    def _post_init_hooks(self):
         if self.optenv is not None:
             self.reset()
 

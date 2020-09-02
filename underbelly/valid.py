@@ -92,7 +92,7 @@ class IDependenciesAbstract(abc.ABC, metaclass=VerificationType):
             return
         self.__keyword_dependencies, self.__iskwdepend = self.__extract_kwargs(**keywords)
 
-    def _verify_fields(self):
+    def _post_init_hooks(self):
         self.__consolidate_essentials()
         self.__pull_keywords()
         self.__extract_init()
@@ -190,7 +190,7 @@ class ValueVerification(abc.ABC, metaclass=VerificationType):
         del self.__initfields
         del self.__isinitfields
 
-    def _verify_fields(self):
+    def _post_init_hooks(self):
         self.__extract_init()
         self.__merge_fields()
         self.__create_field_key()

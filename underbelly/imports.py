@@ -11,7 +11,7 @@ import threading
 import time
 import typing
 from hashlib import md5
-from typing import Optional
+from typing import Optional, Union, OrderedDict, Iterator, Tuple, Callable
 
 import numpy as np
 import toolz
@@ -39,7 +39,7 @@ class VerificationType(abc.ABCMeta):
 
     def __call__(cls, *args, **kwargs):
         obj = type.__call__(cls, *args, **kwargs)
-        obj._verify_fields()
+        obj._post_init_hooks()
         return obj
 
 
@@ -47,6 +47,7 @@ __all__ = [
     "random",
     "abc",
     'start_all',
+    'OrderedDict',
     'end_all',
     'base_model',
     'copy',
@@ -54,8 +55,11 @@ __all__ = [
     "typing",
     "time",
     'threading',
+    'Iterator',
     'base64',
     "logger",
+    'Union',
+    'Callable',
     'toolz',
     'np',
     'md5',
@@ -69,6 +73,7 @@ __all__ = [
     'abstractmethod',
     'Optional',
     'uuid',
+    'Tuple',
     'collections',
     'curry',
     'inspect',
